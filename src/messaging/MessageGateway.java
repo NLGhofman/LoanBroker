@@ -32,14 +32,13 @@ public class MessageGateway
     private Session session;
     private Connection connection;
     
+    private Destination consumerDestination;
     private MessageConsumer consumer;
     
     public MessageGateway(String consumerQueue) 
             throws NamingException, JMSException
     {
-        Properties props = new Properties();
-        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, ACTIVEMQ_CONTEXTFACTORY);
-        props.setProperty(Context.PROVIDER_URL, PROVIDER_URL);
+        Properties props = createProperties();
         props.put("queue." + consumerQueue, consumerQueue);
         
         Context jdniContext = new InitialContext(props);
@@ -47,14 +46,13 @@ public class MessageGateway
         connection = connectionFactory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         
-        Destination consumerDestination = (Destination)jdniContext.lookup(consumerQueue);
+        consumerDestination = (Destination)jdniContext.lookup(consumerQueue);
         consumer = session.createConsumer(consumerDestination);
     }
     
-    public void start() 
-            throws JMSException
+    public Destination getConsumerDestination()
     {
-        connection.start();
+        return consumerDestination;
     }
     
     public void setListener(MessageListener listener) 
@@ -63,10 +61,16 @@ public class MessageGateway
         consumer.setMessageListener(listener);
     }
     
+    public void start() 
+            throws JMSException
+    {
+        connection.start();
+    }
+    
     public void sendMessage(String queueName, Message message) 
             throws NamingException, JMSException
     {
-        Properties props = new Properties();
+        Properties props = createProperties();
         props.put("queue." + queueName, queueName);
         Context jdniContext = new InitialContext(props);
         Destination destination = (Destination)jdniContext.lookup(queueName);
@@ -78,5 +82,13 @@ public class MessageGateway
             throws JMSException
     {
         return session.createTextMessage(body);
+    }
+    
+    private Properties createProperties()
+    {
+        Properties props = new Properties();
+        props.setProperty(Context.INITIAL_CONTEXT_FACTORY, ACTIVEMQ_CONTEXTFACTORY);
+        props.setProperty(Context.PROVIDER_URL, PROVIDER_URL);
+        return props;
     }
 }

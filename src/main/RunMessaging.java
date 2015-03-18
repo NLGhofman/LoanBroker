@@ -1,21 +1,25 @@
 package main;
 
-
 import bank.Bank;
 import client.ClientRequest;
 import client.LoanTestClient;
 import creditbureau.CreditBureau;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import loanbroker.LoanBroker;
 
 /**
  * This application tests the LoanBroker system.
- * 
+ *
  */
-public class RunMessaging {
+public class RunMessaging
+{
 
-    public static void main(String[] args) {
-        try {
-            // read the queue names from file "MESSAGING.ini"  
+    public static void main(String[] args)
+    {
+        try
+        {
+            // read the queue names from file "MESSAGING.ini"
             JMSSettings.init("MESSAGING_CHANNELS.ini");
             JMSSettings.setRunMode(JMSSettings.RunMode.AUTOMATICALLY); // this means that the Bank will automatically generate an Interest rate and return it!
             final String clientRequestQueue = JMSSettings.get(JMSSettings.LOAN_REQUEST);
@@ -30,9 +34,9 @@ public class RunMessaging {
 
             // create a Client Application
             LoanTestClient client = new LoanTestClient("The Hypotheker", clientRequestQueue, clientReplyQueue);
-            
+
             // create the CreditBureau Application
-            CreditBureau creditBureau = new CreditBureau(creditRequestQueue,creditReplyQueue);
+            CreditBureau creditBureau = new CreditBureau(creditRequestQueue, creditReplyQueue);
 
             // create one Bank application
             Bank ing = new Bank("ING", ingRequestQueue, bankReplyQueue);
@@ -47,10 +51,10 @@ public class RunMessaging {
             client.sendRequest(new ClientRequest(1, 100000, 24));
             client.sendRequest(new ClientRequest(2, 88888, 5));
             client.sendRequest(new ClientRequest(3, 100, 5));
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
-
+        catch (Exception ex)
+        {
+            Logger.getLogger(RunMessaging.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
