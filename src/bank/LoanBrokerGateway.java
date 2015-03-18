@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client;
+package bank;
 
+import client.ClientReply;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.jms.JMSException;
@@ -23,27 +24,27 @@ public abstract class LoanBrokerGateway
 {
 
     private MessageGateway messageGateway;
-    private ClientSerializer serializer;
-    private String requestQueue;
-
+    private String replyQueue;
+    private BankSerializer serializer;
+    
     public LoanBrokerGateway(String requestQueue, String replyQueue)
             throws GatewayException
     {
         try
         {
-            this.requestQueue = requestQueue;
-            this.serializer = new ClientSerializer();
-            this.messageGateway = new MessageGateway(replyQueue);
+            this.replyQueue = replyQueue;
+            this.serializer = new BankSerializer();
+            this.messageGateway = new MessageGateway(requestQueue);
             this.messageGateway.setListener(new MessageListener()
             {
-
+                
                 public void onMessage(Message msg)
                 {
                     try
                     {
-                        String body = ((TextMessage) msg).getText();
-                        ClientReply reply = serializer.replyFromString(body);
-                        onClientReplyReceived(reply);
+                        String body = ((TextMessage)msg).getText();
+                        BankQuoteRequest request = serializer.requestFromString(body);
+                        onBankQuoteRequestReceived(request);
                     }
                     catch (JMSException ex)
                     {
@@ -61,7 +62,7 @@ public abstract class LoanBrokerGateway
             throw new GatewayException("An error has occured in creating the gateway.", ex);
         }
     }
-
+    
     public void start()
             throws GatewayException
     {
@@ -74,15 +75,15 @@ public abstract class LoanBrokerGateway
             throw new GatewayException("An error has occured in starting the gateway.", ex);
         }
     }
-
-    public void sendClientRequest(ClientRequest request)
+    
+    public void sendBankQuoteReply(BankQuoteReply reply)
             throws GatewayException
     {
         try
         {
-            String body = serializer.requestToString(request);
+            String body = serializer.replyToString(reply);
             Message message = messageGateway.createMessage(body);
-            messageGateway.sendMessage(requestQueue, message);
+            messageGateway.sendMessage(replyQueue, message);
         }
         catch (JMSException ex)
         {
@@ -92,8 +93,7 @@ public abstract class LoanBrokerGateway
         {
             throw new GatewayException("An error has occured in sending the message.", ex);
         }
-
     }
-
-    public abstract void onClientReplyReceived(ClientReply reply);
+    
+    public abstract void onBankQuoteRequestReceived(BankQuoteRequest request);
 }
