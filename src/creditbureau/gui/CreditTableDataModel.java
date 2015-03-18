@@ -14,10 +14,11 @@ import java.util.Vector;
  *
  * @author Maja Pesic
  */
-public class CreditTableDataModel extends RequestReplyTableModel<CreditRequest, CreditReply> {
+public class CreditTableDataModel extends RequestReplyTableModel<CreditRequest, CreditReply>
+{
 
-    public CreditTableDataModel() {
-        super();
+    public CreditTableDataModel()
+    {
         Vector<String> header = new Vector<String>();
         header.add("ssn");
         header.add("score");
@@ -26,23 +27,28 @@ public class CreditTableDataModel extends RequestReplyTableModel<CreditRequest, 
     }
 
     @Override
-    protected RequestReplyRow<CreditRequest, CreditReply> createRow(CreditRequest request) {
+    protected RequestReplyRow<CreditRequest, CreditReply> createRow(CreditRequest request)
+    {
         return new Row(request);
     }
 
-    private class Row extends RequestReplyRow<CreditRequest, CreditReply> {
+    private class Row extends RequestReplyRow<CreditRequest, CreditReply>
+    {
 
-        public Row(CreditRequest request) {
+        public Row(CreditRequest request)
+        {
             super(request, getRowCount());
         }
 
         @Override
-        protected void fillRequestCells(CreditRequest request) {
+        protected void fillRequestCells(CreditRequest request)
+        {
             add(request.getSSN());
         }
 
         @Override
-        protected void fillReplyCells(CreditReply reply) {
+        protected void fillReplyCells(CreditReply reply)
+        {
             setValueAt(reply.getCreditScore(), getIndex(), 1);
             setValueAt(reply.getHistory(), getIndex(), 2);
         }

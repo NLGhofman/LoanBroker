@@ -4,11 +4,7 @@
  */
 package loanbroker.gui;
 
-import bank.gui.*;
-import bank.BankQuoteReply;
-import bank.BankQuoteRequest;
 import common.BankReplyCellRenderer;
-import common.BankRequestCellRenderer;
 import common.ClientReplyCellRenderer;
 import common.ClientRequestCellRenderer;
 import common.CreditReplyCellRenderer;
@@ -20,31 +16,46 @@ import javax.swing.table.TableModel;
  *
  * @author Maja Pesic
  */
-public class BrokerTable extends SendReceiveTable {
+public class BrokerTable extends SendReceiveTable
+{
 
     private ClientRequestCellRenderer clientRequestRenderer = new ClientRequestCellRenderer();
     private CreditReplyCellRenderer creditRenderer = new CreditReplyCellRenderer();
     private BankReplyCellRenderer bankRenderer = new BankReplyCellRenderer();
     private ClientReplyCellRenderer clientReplyRenderer = new ClientReplyCellRenderer();
 
-    public BrokerTable(TableModel model) {
+    public BrokerTable(TableModel model)
+    {
         super(model);
 
-        setReceiveColumns(new int[]{0, 1, 2, 3, 4, 5, 6});
+        setReceiveColumns(new int[]
+        {
+            0, 1, 2, 3, 4, 5, 6
+        });
     }
 
     @Override
-    public TableCellRenderer getCellRenderer(int row, int column) {
+    public TableCellRenderer getCellRenderer(int row, int column)
+    {
 
-        if (column < 3) {
+        if (column < 3)
+        {
             return clientRequestRenderer;
-        } else {
-            if (column < 5) {
+        }
+        else
+        {
+            if (column < 5)
+            {
                 return creditRenderer;
-            } else {
-                if (column < 14) {
+            }
+            else
+            {
+                if (column < 14)
+                {
                     return bankRenderer;
-                } else {
+                }
+                else
+                {
                     return clientReplyRenderer;
                 }
             }

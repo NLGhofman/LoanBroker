@@ -13,12 +13,8 @@ import javax.swing.table.DefaultTableCellRenderer;
  *
  * @author Maja Pesic
  */
-public abstract class ColorRenderer extends DefaultTableCellRenderer {
-    
-
-    public ColorRenderer() {
-        super();
-    }
+public abstract class ColorRenderer extends DefaultTableCellRenderer
+{
 
     protected abstract Color getColor();
 
@@ -26,12 +22,16 @@ public abstract class ColorRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(
             JTable table, Object color,
             boolean isSelected, boolean hasFocus,
-            int row, int column) {
+            int row, int column)
+    {
         Component comp = super.getTableCellRendererComponent(table, color,
                 isSelected, hasFocus, row, column);
-        if (!isSelected) {
+        if (!isSelected)
+        {
             comp.setBackground(getColor());
-        } else { // If not shaded, match the table's background
+        }
+        else
+        { // If not shaded, match the table's background
             comp.setBackground(getBackground());
         }
         return comp;

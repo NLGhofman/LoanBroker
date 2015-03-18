@@ -10,10 +10,12 @@ import java.awt.Color;
  *
  * @author Maja Pesic
  */
-public class ClientRequestCellRenderer extends ColorRenderer {
+public class ClientRequestCellRenderer extends ColorRenderer
+{
 
     @Override
-    protected Color getColor() {
+    protected Color getColor()
+    {
         return new Color(204, 255, 204);
     }
 }

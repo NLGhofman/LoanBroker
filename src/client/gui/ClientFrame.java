@@ -22,18 +22,20 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
- * This class is used as GUI for the TestClient application.
- * The Frame contains a table with sent ClietnRequests and received ClientReplies.
- * The Frame positions itself in the down left corner of the screen.
- * If multiple instances of this frame are made,
- * they will be positioned to the right of the previous frame instance.
+ * This class is used as GUI for the TestClient application. The Frame contains
+ * a table with sent ClietnRequests and received ClientReplies. The Frame
+ * positions itself in the down left corner of the screen. If multiple instances
+ * of this frame are made, they will be positioned to the right of the previous
+ * frame instance.
+ *
  * @author Maja Pesic
  */
-public abstract class ClientFrame extends JFrame {
+public abstract class ClientFrame extends JFrame
+{
 
     private static final int BORDER = 20;
     private static int X_POSITION = BORDER;
-    
+
     private JTextArea text = new JTextArea();
     private JTextField ssnComp = new JTextField("1");
     private JTextField amountComp = new JTextField("100000");
@@ -41,12 +43,13 @@ public abstract class ClientFrame extends JFrame {
     private ClientTableDataModel model = new ClientTableDataModel();
     private ClientTable table = new ClientTable(model);
 
-    public ClientFrame(String name) {
+    public ClientFrame(String name)
+    {
         super();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int w = (int) (screenSize.getWidth() / 5);
-        int h = (int) ( (screenSize.getHeight() - (4*BORDER))/ 2);
+        int h = (int) ((screenSize.getHeight() - (4 * BORDER)) / 2);
         setSize(new Dimension(w, h));
 
         int x = X_POSITION;
@@ -57,7 +60,8 @@ public abstract class ClientFrame extends JFrame {
         initComponents();
     }
 
-    private void initComponents() {
+    private void initComponents()
+    {
         JPanel panel = new JPanel(new BorderLayout());
         text.setEditable(false);
         panel.add(new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
@@ -78,9 +82,11 @@ public abstract class ClientFrame extends JFrame {
         input.add(line);
 
         JButton sendBtn = new JButton("send");
-        sendBtn.addActionListener(new ActionListener() {
+        sendBtn.addActionListener(new ActionListener()
+        {
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 sendRequest();
             }
         });
@@ -95,7 +101,8 @@ public abstract class ClientFrame extends JFrame {
         setContentPane(panel);
     }
 
-    private void sendRequest() {
+    private void sendRequest()
+    {
         int ssn = Integer.parseInt(ssnComp.getText().replaceAll(" ", ""));
         int amount = Integer.parseInt(amountComp.getText().replaceAll(" ", ""));
         int time = Integer.parseInt(timeComp.getText().replaceAll(" ", ""));
@@ -104,11 +111,13 @@ public abstract class ClientFrame extends JFrame {
 
     public abstract void send(ClientRequest request);
 
-    public void addRequest(ClientRequest request) {
+    public void addRequest(ClientRequest request)
+    {
         model.addRequest(request);
     }
 
-    public void addReply(ClientRequest request, ClientReply reply) {
+    public void addReply(ClientRequest request, ClientReply reply)
+    {
         model.addReply(request, reply);
     }
 }

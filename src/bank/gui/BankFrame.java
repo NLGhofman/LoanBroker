@@ -15,8 +15,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,14 +25,16 @@ import javax.swing.event.ListSelectionListener;
 import main.JMSSettings;
 
 /**
- * This class is used as GUI for the Bank application.
- * The Frame contains a table with received BankQuoteRequests and sent BankQuoteReplies.
- * The Frame positions itself in the top left corner of the screen.
- * If multiple instances of this frame are made,
- * they will be positioned to the right of the previous frame instance.
+ * This class is used as GUI for the Bank application. The Frame contains a
+ * table with received BankQuoteRequests and sent BankQuoteReplies. The Frame
+ * positions itself in the top left corner of the screen. If multiple instances
+ * of this frame are made, they will be positioned to the right of the previous
+ * frame instance.
+ *
  * @author Maja Pesic
  */
-public class BankFrame extends JFrame {
+public class BankFrame extends JFrame
+{
 
     private static final int BORDER = 20;
     private static int X_POSITION = BORDER;
@@ -45,7 +45,8 @@ public class BankFrame extends JFrame {
     private BankTable table = new BankTable(model);
     private Bank bankModel;
 
-    public BankFrame(Bank bankModel, String bankName) {
+    public BankFrame(Bank bankModel, String bankName)
+    {
         super();
         this.bankModel = bankModel;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,18 +62,22 @@ public class BankFrame extends JFrame {
         int y = BORDER;
         setLocation(x, y);
 
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
+        {
 
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(ListSelectionEvent e)
+            {
                 selectedRequestChanged();
             }
         });
     }
 
-    private void selectedRequestChanged() {
+    private void selectedRequestChanged()
+    {
         boolean replyCanBeSent = false;
         BankQuoteRequest request = getSelectedRequest();
-        if (request != null) { // start sending reply only if a valid request is selected
+        if (request != null)
+        { // start sending reply only if a valid request is selected
             BankQuoteReply reply = getSelectedReply();
             replyCanBeSent = (reply == null);
         }
@@ -81,16 +86,15 @@ public class BankFrame extends JFrame {
         sendBtn.setEnabled(replyCanBeSent);
     }
 
-    private void initComponents() {
+    private void initComponents()
+    {
         JPanel panel = new JPanel();
         panel.setBorder(javax.swing.BorderFactory.createTitledBorder("received requests"));
         panel.setLayout(new BorderLayout());
         panel.setOpaque(true);
 
-
         panel.add(new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
         table.setFillsViewportHeight(true);
-
 
         JPanel input = new JPanel(new GridLayout(3, 0));
 
@@ -106,17 +110,21 @@ public class BankFrame extends JFrame {
         line.add(errorComp, BorderLayout.CENTER);
         input.add(line);
 
+        sendBtn.addActionListener(new ActionListener()
+        {
 
-        sendBtn.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 BankQuoteRequest request = getSelectedRequest();
-                if (request != null) { // start sending reply only if a valid request is selected
+                if (request != null)
+                { // start sending reply only if a valid request is selected
                     BankQuoteReply reply = getSelectedReply();
-                    if (reply == null) { // send new reply only if no reply has been sent yet for this request
+                    if (reply == null)
+                    { // send new reply only if no reply has been sent yet for this request
                         double interest = Double.parseDouble(interestComp.getText());
                         int error = Integer.parseInt(errorComp.getText());
-                        if (onSendBankReplyClicked(request, interest, error)){
+                        if (onSendBankReplyClicked(request, interest, error))
+                        {
                             selectedRequestChanged();
                         }
                     }
@@ -126,15 +134,18 @@ public class BankFrame extends JFrame {
 
         JPanel replyCompnent = new JPanel(new BorderLayout());
         String title = "";
-        if (JMSSettings.getRunMode() == JMSSettings.RunMode.AUTOMATICALLY) {
-            
+        if (JMSSettings.getRunMode() == JMSSettings.RunMode.AUTOMATICALLY)
+        {
+
             title = "Automatic runmode is on: replies are randomly generated and automatically sent back";
             interestComp.setVisible(false);
             errorComp.setVisible(false);
             sendBtn.setVisible(false);
             interestLabel.setVisible(false);
             errorLabel.setVisible(false);
-        } else {
+        }
+        else
+        {
             title = "Manual runmode is on: send reply manually after selecting a row in the table above";
         }
         replyCompnent.setBorder(javax.swing.BorderFactory.createTitledBorder(title));
@@ -151,12 +162,14 @@ public class BankFrame extends JFrame {
         setContentPane(panel);
     }
 
-    private BankQuoteRequest getSelectedRequest() {
+    private BankQuoteRequest getSelectedRequest()
+    {
         int selected_row_index = table.getSelectedRow();
         return model.getRequest(selected_row_index);
     }
 
-    private BankQuoteReply getSelectedReply() {
+    private BankQuoteReply getSelectedReply()
+    {
         int selected_row_index = table.getSelectedRow();
         return model.getReply(selected_row_index);
     }
@@ -166,12 +179,13 @@ public class BankFrame extends JFrame {
         return bankModel.onSendBankReplyClicked(request, interest, error);
     }
 
-
-    public void addRequest(BankQuoteRequest request) {
+    public void addRequest(BankQuoteRequest request)
+    {
         model.addRequest(request);
     }
 
-    public void addReply(BankQuoteRequest request, BankQuoteReply reply) {
+    public void addReply(BankQuoteRequest request, BankQuoteReply reply)
+    {
         model.addReply(request, reply);
     }
 }

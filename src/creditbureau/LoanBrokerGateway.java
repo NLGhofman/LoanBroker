@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package bank;
+package creditbureau;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,11 +20,11 @@ import messaging.MessageGateway;
  * @author Zef
  */
 public abstract class LoanBrokerGateway
-{
+{    
 
     private MessageGateway messageGateway;
     private String replyQueue;
-    private BankSerializer serializer;
+    private CreditSerializer serializer;
     
     public LoanBrokerGateway(String requestQueue, String replyQueue)
             throws GatewayException
@@ -32,7 +32,7 @@ public abstract class LoanBrokerGateway
         try
         {
             this.replyQueue = replyQueue;
-            this.serializer = new BankSerializer();
+            this.serializer = new CreditSerializer();
             this.messageGateway = new MessageGateway(requestQueue);
             this.messageGateway.setListener(new MessageListener()
             {
@@ -42,8 +42,8 @@ public abstract class LoanBrokerGateway
                     try
                     {
                         String body = ((TextMessage)msg).getText();
-                        BankQuoteRequest request = serializer.requestFromString(body);
-                        onBankQuoteRequestReceived(request);
+                        CreditRequest request = serializer.requestFromString(body);
+                        onCreditRequestReceived(request);
                     }
                     catch (JMSException ex)
                     {
@@ -75,7 +75,7 @@ public abstract class LoanBrokerGateway
         }
     }
     
-    public void sendBankQuoteReply(BankQuoteReply reply)
+    public void sendCreditReply(CreditReply reply)
             throws GatewayException
     {
         try
@@ -94,5 +94,5 @@ public abstract class LoanBrokerGateway
         }
     }
     
-    public abstract void onBankQuoteRequestReceived(BankQuoteRequest request);
+    public abstract void onCreditRequestReceived(CreditRequest request);
 }

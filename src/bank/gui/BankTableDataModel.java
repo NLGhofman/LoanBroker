@@ -14,10 +14,11 @@ import java.util.Vector;
  *
  * @author Maja Pesic
  */
-class BankTableDataModel extends RequestReplyTableModel<BankQuoteRequest, BankQuoteReply> {
+class BankTableDataModel extends RequestReplyTableModel<BankQuoteRequest, BankQuoteReply>
+{
 
-    public BankTableDataModel() {
-        super();
+    public BankTableDataModel()
+    {
         Vector<String> header = new Vector<String>();
         header.add("ssn");
         header.add("credit");
@@ -31,25 +32,32 @@ class BankTableDataModel extends RequestReplyTableModel<BankQuoteRequest, BankQu
     }
 
     @Override
-    protected RequestReplyRow<BankQuoteRequest, BankQuoteReply> createRow(BankQuoteRequest request) {
+    protected RequestReplyRow<BankQuoteRequest, BankQuoteReply> createRow(BankQuoteRequest request)
+    {
         return new Row(request);
     }
 
-    private class Row extends RequestReplyRow<BankQuoteRequest, BankQuoteReply> {
+    private class Row extends RequestReplyRow<BankQuoteRequest, BankQuoteReply>
+    {
 
-        public Row(BankQuoteRequest request) {
+        public Row(BankQuoteRequest request)
+        {
             super(request, getRowCount());
         }
 
         @Override
-        protected void fillRequestCells(BankQuoteRequest request) {
-            if (request != null) {
+        protected void fillRequestCells(BankQuoteRequest request)
+        {
+            if (request != null)
+            {
                 add(request.getSSN());
                 add(request.getCredit());
                 add(request.getHistory());
                 add(request.getAmount());
                 add(request.getTime());
-            } else {
+            }
+            else
+            {
                 add(request.getSSN());
                 add("");
                 add("");
@@ -59,7 +67,8 @@ class BankTableDataModel extends RequestReplyTableModel<BankQuoteRequest, BankQu
         }
 
         @Override
-        protected void fillReplyCells(BankQuoteReply reply) {
+        protected void fillReplyCells(BankQuoteReply reply)
+        {
             setValueAt(reply.getInterest(), getIndex(), 5);
             setValueAt(reply.getQuoteId(), getIndex(), 6);
             setValueAt(reply.getError(), getIndex(), 7);

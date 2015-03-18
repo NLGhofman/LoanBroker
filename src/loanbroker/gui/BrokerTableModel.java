@@ -15,11 +15,13 @@ import creditbureau.CreditReply;
  *
  * @author Maja Pesic
  */
-public class BrokerTableModel extends DefaultTableModel {
+public class BrokerTableModel extends DefaultTableModel
+{
 
     protected Vector<BrokerRow> rows;
 
-    public BrokerTableModel() {
+    public BrokerTableModel()
+    {
         super();
         Vector<String> header = new Vector<String>();
         header.add("ssn");
@@ -32,7 +34,8 @@ public class BrokerTableModel extends DefaultTableModel {
         setColumns(header);
     }
 
-    protected void setColumns(Vector<String> columns) {
+    protected void setColumns(Vector<String> columns)
+    {
         rows = new Vector<BrokerRow>();
         setDataVector(rows, columns);
     }
@@ -40,65 +43,79 @@ public class BrokerTableModel extends DefaultTableModel {
     /**
      * Returns false regardless of parameter values.
      *
-     * @param   row             the row whose value is to be queried
-     * @param   column          the column whose value is to be queried
-     * @return                  true
+     * @param row the row whose value is to be queried
+     * @param column the column whose value is to be queried
+     * @return true
      * @see #setValueAt
      */
     @Override
-    public boolean isCellEditable(int row, int column) {
+    public boolean isCellEditable(int row, int column)
+    {
         return false;
     }
 
-    public void setClientRequest(ClientRequest request) {
+    public void setClientRequest(ClientRequest request)
+    {
         createRow(request);
     }
 
-    public void setCreditReply(ClientRequest request, CreditReply reply) {
+    public void setCreditReply(ClientRequest request, CreditReply reply)
+    {
         BrokerRow row = getRow(request);
         row.setCreditReply(reply);
     }
 
-    public void setBankReply(ClientRequest request, BankQuoteReply reply) {
+    public void setBankReply(ClientRequest request, BankQuoteReply reply)
+    {
         BrokerRow row = getRow(request);
         row.setBankQuoteReply1(reply);
     }
 
-    private BrokerRow createRow(ClientRequest request) {
+    private BrokerRow createRow(ClientRequest request)
+    {
         BrokerRow row = new BrokerRow(getRowCount());
         row.setClientRequest(request);
         addRow(row);
         return row;
     }
 
-    private BrokerRow getRow(ClientRequest request) {
+    private BrokerRow getRow(ClientRequest request)
+    {
         boolean found = false;
         Iterator<BrokerRow> it = rows.iterator();
         BrokerRow rowFound = null;
 
-        if (request != null) {
-            while ((!found) && it.hasNext()) {
+        if (request != null)
+        {
+            while ((!found) && it.hasNext())
+            {
                 rowFound = it.next();
                 found = (rowFound.getClientRequest() == request);
             }
         }
 
-        if (!found) {
+        if (!found)
+        {
             rowFound = createRow(request);
         }
         return rowFound;
     }
 
-    public ClientRequest getClientRequest(int index) {
-        try {
+    public ClientRequest getClientRequest(int index)
+    {
+        try
+        {
             return rows.get(index).getClientRequest();
-        } catch (ArrayIndexOutOfBoundsException e) {
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
             e.printStackTrace();
             return null;
         }
     }
 
-    private class BrokerRow extends Vector {
+    private class BrokerRow extends Vector
+    {
 
         private static final int SSN = 0;
         private static final int AMOUNT = 1;
@@ -112,52 +129,64 @@ public class BrokerTableModel extends DefaultTableModel {
         private BankQuoteReply bankQuoteReply1 = null;
         private int nr;
 
-        public BrokerRow(int index) {
+        public BrokerRow(int index)
+        {
             super();
             ensureCapacity(7);
             nr = index;
         }
 
-        protected int getIndex() {
+        protected int getIndex()
+        {
             return nr;
         }
 
-        private void setValue(int column, Object aValue) {
+        private void setValue(int column, Object aValue)
+        {
             setValueAt(aValue, nr, column);
         }
 
-        public BankQuoteReply getBankQuoteReply1() {
+        public BankQuoteReply getBankQuoteReply1()
+        {
             return bankQuoteReply1;
         }
 
-        public void setBankQuoteReply1(BankQuoteReply bankQuoteReply) {
+        public void setBankQuoteReply1(BankQuoteReply bankQuoteReply)
+        {
             this.bankQuoteReply1 = bankQuoteReply;
             setValue(INTEREST1, bankQuoteReply.getInterest());
             setValue(QUOTE1, bankQuoteReply.getQuoteId());
         }
 
-        public ClientRequest getClientRequest() {
+        public ClientRequest getClientRequest()
+        {
             return clientRequest;
         }
 
-        public void setClientRequest(ClientRequest clientRequest) {
+        public void setClientRequest(ClientRequest clientRequest)
+        {
             this.clientRequest = clientRequest;
-            if (clientRequest != null) {
+            if (clientRequest != null)
+            {
                 add(clientRequest.getSSN());
                 add(clientRequest.getAmount());
                 add(clientRequest.getTime());
-            } else {
+            }
+            else
+            {
                 add("");
                 add("");
                 add("");
             }
         }
 
-        public CreditReply getCreditReply() {
+        public CreditReply getCreditReply()
+        {
             return creditReply;
         }
 
-        public void setCreditReply(CreditReply creditReply) {
+        public void setCreditReply(CreditReply creditReply)
+        {
             this.creditReply = creditReply;
             setValue(SCORE, creditReply.getCreditScore());
             setValue(HISTORY, creditReply.getHistory());

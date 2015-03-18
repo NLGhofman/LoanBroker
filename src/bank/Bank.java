@@ -39,7 +39,12 @@ public class Bank
             @Override
             public void onBankQuoteRequestReceived(BankQuoteRequest request)
             {
-                onBankQuoteRequest(request);
+                frame.addRequest(request);
+                if (JMSSettings.getRunMode() == RunMode.AUTOMATICALLY)
+                {
+                    BankQuoteReply reply = computeReplyRandomly(request);
+                    sendReply(request, reply);
+                }
             }
         };
 
@@ -50,7 +55,6 @@ public class Bank
 
             public void run()
             {
-
                 frame.setVisible(true);
             }
         });
@@ -66,16 +70,6 @@ public class Bank
     {
         String quoteID = name + "-" + String.valueOf(++quoteCounter);
         return new BankQuoteReply(interest, quoteID, error);
-    }
-
-    private void onBankQuoteRequest(BankQuoteRequest request)
-    {
-        frame.addRequest(request);
-        if (JMSSettings.getRunMode() == RunMode.AUTOMATICALLY)
-        {
-            BankQuoteReply reply = computeReplyRandomly(request);
-            sendReply(request, reply);
-        }
     }
 
     /**
@@ -140,9 +134,10 @@ public class Bank
 
     /**
      * Opens connection to JMS,so that messages can be send and received.
+     *
      * @throws messaging.GatewayException
      */
-    public void start() 
+    public void start()
             throws Exception
     {
         gateway.start();
