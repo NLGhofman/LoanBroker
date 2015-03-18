@@ -16,7 +16,7 @@ import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 import javax.naming.NamingException;
 import messaging.GatewayException;
-import messaging.MessageGateway;
+import messaging.MessagingGateway;
 
 /**
  *
@@ -25,8 +25,7 @@ import messaging.MessageGateway;
 public abstract class BankGateway
 {
 
-    private MessageGateway messageGateway;
-    private String requestQueue;
+    private MessagingGateway gateway;
     private BankSerializer serializer;
 
     public BankGateway(String requestQueue, String replyQueue)
@@ -34,10 +33,9 @@ public abstract class BankGateway
     {
         try
         {
-            this.requestQueue = requestQueue;
             this.serializer = new BankSerializer();
-            this.messageGateway = new MessageGateway(replyQueue);
-            this.messageGateway.setListener(new MessageListener()
+            this.gateway = new MessagingGateway(requestQueue, replyQueue);
+            this.gateway.setListener(new MessageListener()
             {
 
                 public void onMessage(Message msg)
@@ -70,7 +68,7 @@ public abstract class BankGateway
     {
         try
         {
-            messageGateway.start();
+            gateway.start();
         }
         catch (JMSException ex)
         {
@@ -84,14 +82,10 @@ public abstract class BankGateway
         try
         {
             String body = serializer.requestToString(request);
-            Message message = messageGateway.createMessage(body);
-            messageGateway.sendMessage(requestQueue, message);
+            Message message = gateway.createMessage(body);
+            gateway.sendMessage(message);
         }
         catch (JMSException ex)
-        {
-            throw new GatewayException("An error has occured in sending the message.", ex);
-        }
-        catch (NamingException ex)
         {
             throw new GatewayException("An error has occured in sending the message.", ex);
         }

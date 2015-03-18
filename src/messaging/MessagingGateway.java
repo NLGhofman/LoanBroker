@@ -15,75 +15,87 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
  * A gateway that handles JMS messaging.
+ *
  * @author Zef
  */
-public class MessageGateway
+public class MessagingGateway
 {
+
     private final String ACTIVEMQ_CONTEXTFACTORY = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
     private final String PROVIDER_URL = "tcp://localhost:61616";
 
     private Session session;
     private Connection connection;
-    
+
     private Destination consumerDestination;
+    private Destination producerDestination;
+
     private MessageConsumer consumer;
-    
-    public MessageGateway(String consumerQueue) 
+    private MessageProducer producer;
+
+    public MessagingGateway(String producerQueue, String consumerQueue)
             throws NamingException, JMSException
     {
         Properties props = createProperties();
         props.put("queue." + consumerQueue, consumerQueue);
-        
+        props.put("queue." + producerQueue, producerQueue);
+
         Context jdniContext = new InitialContext(props);
-        ConnectionFactory connectionFactory = (ConnectionFactory)jdniContext.lookup("ConnectionFactory");
+        ConnectionFactory connectionFactory = (ConnectionFactory) jdniContext.lookup("ConnectionFactory");
         connection = connectionFactory.createConnection();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        
-        consumerDestination = (Destination)jdniContext.lookup(consumerQueue);
+
+        consumerDestination = (Destination) jdniContext.lookup(consumerQueue);
         consumer = session.createConsumer(consumerDestination);
+
+        if (producerQueue == null || !producerQueue.equals(""))
+        {
+            producerDestination = (Destination) jdniContext.lookup(producerQueue);
+            producer = session.createProducer(producerDestination);
+        }
     }
-    
+
     public Destination getConsumerDestination()
     {
         return consumerDestination;
     }
-    
-    public void setListener(MessageListener listener) 
+
+    public void setListener(MessageListener listener)
             throws JMSException
     {
         consumer.setMessageListener(listener);
     }
-    
-    public void start() 
+
+    public void start()
             throws JMSException
     {
         connection.start();
     }
-    
-    public void sendMessage(String queueName, Message message) 
-            throws NamingException, JMSException
+
+    public void sendMessage(Message message)
+            throws JMSException
     {
-        Properties props = createProperties();
-        props.put("queue." + queueName, queueName);
-        Context jdniContext = new InitialContext(props);
-        Destination destination = (Destination)jdniContext.lookup(queueName);
-        MessageProducer producer = session.createProducer(destination);
         producer.send(message);
     }
-    
-    public Message createMessage(String body) 
+
+    public void sendMessage(Destination destination, Message message)
+            throws JMSException
+    {
+        producer.send(destination, message);
+    }
+
+    public Message createMessage(String body)
             throws JMSException
     {
         return session.createTextMessage(body);
     }
-    
+
     private Properties createProperties()
     {
         Properties props = new Properties();
