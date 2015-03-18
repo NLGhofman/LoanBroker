@@ -1,11 +1,12 @@
 package client;
 
 import com.thoughtworks.xstream.XStream;
+import messaging.requestreply.IRequestReplySerializer;
 
 /**
  * This class serializes ClientReply and ClientRequest to and from XML.
  */
-public class ClientSerializer
+public class ClientSerializer implements IRequestReplySerializer<ClientRequest, ClientReply>
 {
 
     private static final String ALIAS_REQUEST = "ClientRequest"; // the tag name for ClientRequest

@@ -1,12 +1,13 @@
 package bank;
 
 import com.thoughtworks.xstream.XStream;
+import messaging.requestreply.IRequestReplySerializer;
 
 /**
  *
  * This class serializes BankRequest and Bankreply to/from XML.
  */
-public class BankSerializer
+public class BankSerializer implements IRequestReplySerializer<BankQuoteRequest, BankQuoteReply>
 {
 
     private static final String ALIAS_REQUEST = "BankQuoteRequest"; // tag name for BankRequest

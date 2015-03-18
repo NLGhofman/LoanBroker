@@ -68,12 +68,12 @@ public class AsynchronousRequestor<REQUEST, REPLY>
             throws Exception
     {
         this.serializer = serializer;
-        this.listeners = new HashMap<String, Pair>();
+        this.listeners = new HashMap<>();
 
         gateway = new MessagingGateway(requestSenderQueue, replyReceiverQueue);
         gateway.setListener(new MessageListener()
         {
-
+            @Override
             public void onMessage(Message message)
             {
                 onReply((TextMessage) message);

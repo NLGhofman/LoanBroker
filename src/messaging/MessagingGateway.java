@@ -43,8 +43,15 @@ public class MessagingGateway
             throws NamingException, JMSException
     {
         Properties props = createProperties();
-        props.put("queue." + consumerQueue, consumerQueue);
-        props.put("queue." + producerQueue, producerQueue);
+        if (consumerQueue != null && !consumerQueue.equals(""))
+        {
+            props.put("queue." + consumerQueue, consumerQueue);
+        }
+
+        if (producerQueue != null && !producerQueue.equals(""))
+        {
+            props.put("queue." + producerQueue, producerQueue);
+        }
 
         Context jdniContext = new InitialContext(props);
         ConnectionFactory connectionFactory = (ConnectionFactory) jdniContext.lookup("ConnectionFactory");
@@ -54,7 +61,7 @@ public class MessagingGateway
         consumerDestination = (Destination) jdniContext.lookup(consumerQueue);
         consumer = session.createConsumer(consumerDestination);
 
-        if (producerQueue == null || !producerQueue.equals(""))
+        if (producerQueue != null && !producerQueue.equals(""))
         {
             producerDestination = (Destination) jdniContext.lookup(producerQueue);
             producer = session.createProducer(producerDestination);
@@ -87,7 +94,8 @@ public class MessagingGateway
     public void sendMessage(Destination destination, Message message)
             throws JMSException
     {
-        producer.send(destination, message);
+        MessageProducer tempProducer = session.createProducer(destination);
+        tempProducer.send(message);
     }
 
     public Message createMessage(String body)

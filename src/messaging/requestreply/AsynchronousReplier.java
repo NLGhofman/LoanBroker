@@ -58,12 +58,13 @@ public class AsynchronousReplier<REQUEST, REPLY>
         this.gateway.setListener(new MessageListener()
         {
 
+            @Override
             public void onMessage(Message message)
             {
                 onRequest((TextMessage) message);
             }
         });
-        this.activeRequests = new HashMap<REQUEST, Message>();
+        this.activeRequests = new HashMap<>();
     }
 
     /**
@@ -131,11 +132,12 @@ public class AsynchronousReplier<REQUEST, REPLY>
         try
         {
             Message requestMessage = activeRequests.get(request);
-            String body = serializer.replyToString(reply);
-            Message replyMessage = gateway.createMessage(body);
+            String replyBody = serializer.replyToString(reply);
+            Message replyMessage = gateway.createMessage(replyBody);
             replyMessage.setJMSCorrelationID(requestMessage.getJMSMessageID());
             Destination destination = requestMessage.getJMSReplyTo();
             gateway.sendMessage(destination, replyMessage);
+            activeRequests.remove(request);
             return true;
         }
         catch (JMSException ex)

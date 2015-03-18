@@ -5,87 +5,29 @@
  */
 package creditbureau;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
-import javax.naming.NamingException;
-import messaging.GatewayException;
-import messaging.MessagingGateway;
+import messaging.requestreply.AsynchronousReplier;
+import messaging.requestreply.IRequestListener;
 
 /**
  *
  * @author Zef
  */
-public abstract class LoanBrokerGateway
+public abstract class LoanBrokerGateway extends AsynchronousReplier<CreditRequest, CreditReply>
 {    
-
-    private MessagingGateway gateway;
-    private CreditSerializer serializer;
     
-    public LoanBrokerGateway(String requestQueue, String replyQueue)
-            throws GatewayException
+    public LoanBrokerGateway(String requestQueue)
+            throws Exception
     {
-        try
+        super(requestQueue, new CreditSerializer());
+        super.setRequestListener(new IRequestListener<CreditRequest>()
         {
-            this.serializer = new CreditSerializer();
-            this.gateway = new MessagingGateway(replyQueue, requestQueue);
-            this.gateway.setListener(new MessageListener()
+            
+            @Override
+            public void receivedRequest(CreditRequest request)
             {
-                
-                public void onMessage(Message msg)
-                {
-                    try
-                    {
-                        String body = ((TextMessage)msg).getText();
-                        CreditRequest request = serializer.requestFromString(body);
-                        onCreditRequestReceived(request);
-                    }
-                    catch (JMSException ex)
-                    {
-                        Logger.getLogger(LoanBrokerGateway.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-        }
-        catch (NamingException ex)
-        {
-            throw new GatewayException("An error has occured in creating the gateway.", ex);
-        }
-        catch (JMSException ex)
-        {
-            throw new GatewayException("An error has occured in creating the gateway.", ex);
-        }
-    }
-    
-    public void start()
-            throws GatewayException
-    {
-        try
-        {
-            gateway.start();
-        }
-        catch (JMSException ex)
-        {
-            throw new GatewayException("An error has occured in starting the gateway.", ex);
-        }
-    }
-    
-    public void sendCreditReply(CreditReply reply)
-            throws GatewayException
-    {
-        try
-        {
-            String body = serializer.replyToString(reply);
-            Message message = gateway.createMessage(body);
-            gateway.sendMessage(message);
-        }
-        catch (JMSException ex)
-        {
-            throw new GatewayException("An error has occured in sending the message.", ex);
-        }
+                onCreditRequestReceived(request);
+            }
+        });
     }
     
     public abstract void onCreditRequestReceived(CreditRequest request);

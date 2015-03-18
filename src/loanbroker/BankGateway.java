@@ -8,88 +8,18 @@ package loanbroker;
 import bank.BankQuoteReply;
 import bank.BankQuoteRequest;
 import bank.BankSerializer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
-import javax.naming.NamingException;
-import messaging.GatewayException;
-import messaging.MessagingGateway;
+import messaging.requestreply.AsynchronousRequestor;
 
 /**
  *
  * @author Zef
  */
-public abstract class BankGateway
+public class BankGateway extends AsynchronousRequestor<BankQuoteRequest, BankQuoteReply>
 {
 
-    private MessagingGateway gateway;
-    private BankSerializer serializer;
-
     public BankGateway(String requestQueue, String replyQueue)
-            throws GatewayException
+            throws Exception
     {
-        try
-        {
-            this.serializer = new BankSerializer();
-            this.gateway = new MessagingGateway(requestQueue, replyQueue);
-            this.gateway.setListener(new MessageListener()
-            {
-
-                public void onMessage(Message msg)
-                {
-                    try
-                    {
-                        String body = ((TextMessage)msg).getText();
-                        BankQuoteReply reply = serializer.replyFromString(body);
-                        onBankQuoteReplyReceived(reply);
-                    }
-                    catch (JMSException ex)
-                    {
-                        Logger.getLogger(BankGateway.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            });
-        }
-        catch (NamingException ex)
-        {
-            throw new GatewayException("An error has occured in creating the gateway.", ex);
-        }
-        catch (JMSException ex)
-        {
-            throw new GatewayException("An error has occured in creating the gateway.", ex);
-        }
+        super(requestQueue, replyQueue, new BankSerializer());
     }
-
-    public void start()
-            throws GatewayException
-    {
-        try
-        {
-            gateway.start();
-        }
-        catch (JMSException ex)
-        {
-            throw new GatewayException("An error has occured in starting the gateway.", ex);
-        }
-    }
-
-    public void sendBankQuoteRequest(BankQuoteRequest request)
-            throws GatewayException
-    {
-        try
-        {
-            String body = serializer.requestToString(request);
-            Message message = gateway.createMessage(body);
-            gateway.sendMessage(message);
-        }
-        catch (JMSException ex)
-        {
-            throw new GatewayException("An error has occured in sending the message.", ex);
-        }
-    }
-
-    public abstract void onBankQuoteReplyReceived(BankQuoteReply reply);
 }

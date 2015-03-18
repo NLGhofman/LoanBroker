@@ -4,6 +4,7 @@ import client.gui.ClientFrame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import messaging.GatewayException;
+import messaging.requestreply.IReplyListener;
 
 /**
  * This class represents one Client Application. It: 1. Creates a ClientRequest
@@ -19,14 +20,7 @@ public class LoanTestClient
 
     public LoanTestClient(String name, String requestQueue, String replyQueue) throws Exception
     {
-        gateway = new LoanBrokerGateway(requestQueue, replyQueue) {
-
-            @Override
-            public void onClientReplyReceived(ClientReply reply)
-            {
-                frame.addReply(null, reply);
-            }
-        };
+        gateway = new LoanBrokerGateway(requestQueue, replyQueue);
         // create the GUI
         frame = new ClientFrame(name)
         {
@@ -58,7 +52,15 @@ public class LoanTestClient
     {
         try
         {
-            gateway.sendClientRequest(request);
+            gateway.sendRequest(request, new IReplyListener<ClientRequest, ClientReply>()
+            {
+
+                @Override
+                public void onReply(ClientRequest request, ClientReply reply)
+                {
+                    frame.addReply(request, reply);
+                }
+            });
             frame.addRequest(request);
         }
         catch (GatewayException ex)
@@ -69,6 +71,7 @@ public class LoanTestClient
 
     /**
      * Opens connection to JMS,so that messages can be send and received.
+     *
      * @throws java.lang.Exception
      */
     public void start()

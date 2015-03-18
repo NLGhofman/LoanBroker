@@ -30,10 +30,10 @@ public class Bank
 
     private LoanBrokerGateway gateway;
 
-    public Bank(String bankName, String bankRequestQueue, String bankReplyQueue) throws Exception
+    public Bank(String bankName, String bankRequestQueue) throws Exception
     {
         this.name = bankName;
-        this.gateway = new LoanBrokerGateway(bankRequestQueue, bankReplyQueue)
+        this.gateway = new LoanBrokerGateway(bankRequestQueue)
         {
 
             @Override
@@ -43,7 +43,7 @@ public class Bank
                 if (JMSSettings.getRunMode() == RunMode.AUTOMATICALLY)
                 {
                     BankQuoteReply reply = computeReplyRandomly(request);
-                    sendReply(request, reply);
+                    sendBankQuoteReply(request, reply);
                 }
             }
         };
@@ -53,6 +53,7 @@ public class Bank
         java.awt.EventQueue.invokeLater(new Runnable()
         {
 
+            @Override
             public void run()
             {
                 frame.setVisible(true);
@@ -63,7 +64,7 @@ public class Bank
     public boolean onSendBankReplyClicked(BankQuoteRequest request, double interest, int error)
     {
         BankQuoteReply reply = createReply(interest, error);
-        return sendReply(request, reply);
+        return sendBankQuoteReply(request, reply);
     }
 
     public BankQuoteReply createReply(double interest, int error)
@@ -79,12 +80,12 @@ public class Bank
      * @param reply
      * @return true if the reply is successfully sent, false if sending fails
      */
-    private boolean sendReply(BankQuoteRequest request, BankQuoteReply reply)
+    private boolean sendBankQuoteReply(BankQuoteRequest request, BankQuoteReply reply)
     {
         try
         {
             frame.addReply(request, reply);
-            gateway.sendBankQuoteReply(reply);
+            gateway.sendReply(request, reply);
             return true;
         }
         catch (GatewayException ex)

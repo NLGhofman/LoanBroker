@@ -19,9 +19,10 @@ public class CreditBureau
     private CreditFrame frame;
     private LoanBrokerGateway gateway;
 
-    public CreditBureau(String creditRequestQueue, String creditReplyQueue) throws Exception
+    public CreditBureau(String creditRequestQueue) 
+            throws Exception
     {
-        gateway = new LoanBrokerGateway(creditRequestQueue, creditReplyQueue)
+        gateway = new LoanBrokerGateway(creditRequestQueue)
         {
 
             @Override
@@ -32,7 +33,7 @@ public class CreditBureau
                     frame.addRequest(request);
                     CreditReply reply = computeReply(request);
                     frame.addReply(request, reply);
-                    gateway.sendCreditReply(reply);
+                    gateway.sendReply(request, reply);
                 }
                 catch (GatewayException ex)
                 {
@@ -46,6 +47,7 @@ public class CreditBureau
         java.awt.EventQueue.invokeLater(new Runnable()
         {
 
+            @Override
             public void run()
             {
                 frame.setVisible(true);
