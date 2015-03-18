@@ -1,0 +1,17 @@
+# Netbeans #
+/Kwetter.API/target
+/Kwetter.API/nbproject/private
+/Kwetter.API/dist/
+/Kwetter.API/nbdist/
+/Kwetter.API/nbbuild/
+/Kwetter.API/build/
+
+/Kwetter.Client/nbproject/private
+
+# Classes #
+*.class
+
+# Package files #
+*.jar
+*.war
+nbproject/private/
