@@ -14,10 +14,11 @@ import java.util.Vector;
  *
  * @author Maja Pesic
  */
-public class ClientTableDataModel extends RequestReplyTableModel<ClientRequest, ClientReply> {
+public class ClientTableDataModel extends RequestReplyTableModel<ClientRequest, ClientReply>
+{
 
-    public ClientTableDataModel() {
-        super();
+    public ClientTableDataModel()
+    {
         Vector<String> header = new Vector<String>();
         header.add("ssn");
         header.add("amount");
@@ -28,23 +29,30 @@ public class ClientTableDataModel extends RequestReplyTableModel<ClientRequest, 
     }
 
     @Override
-    protected RequestReplyRow<ClientRequest, ClientReply> createRow(ClientRequest request) {
+    protected RequestReplyRow<ClientRequest, ClientReply> createRow(ClientRequest request)
+    {
         return new Row(request);
     }
 
-    private class Row extends RequestReplyRow<ClientRequest, ClientReply> {
+    private class Row extends RequestReplyRow<ClientRequest, ClientReply>
+    {
 
-        public Row(ClientRequest request) {
+        public Row(ClientRequest request)
+        {
             super(request, getRowCount());
         }
 
         @Override
-        protected void fillRequestCells(ClientRequest request) {
-            if (request != null) {
+        protected void fillRequestCells(ClientRequest request)
+        {
+            if (request != null)
+            {
                 add(request.getSSN());
                 add(request.getAmount());
                 add(request.getTime());
-            } else {
+            }
+            else
+            {
                 add("");
                 add("");
                 add("");
@@ -52,7 +60,8 @@ public class ClientTableDataModel extends RequestReplyTableModel<ClientRequest, 
         }
 
         @Override
-        protected void fillReplyCells(ClientReply reply) {
+        protected void fillReplyCells(ClientReply reply)
+        {
             setValueAt(reply.getInterest(), getIndex(), 3);
             setValueAt(reply.getQuoteID(), getIndex(), 4);
         }

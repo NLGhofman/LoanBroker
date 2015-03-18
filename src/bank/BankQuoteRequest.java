@@ -5,7 +5,8 @@ package bank;
  * This class stores all information about an request from a bank to offer a
  * loan to a specific client.
  */
-public class BankQuoteRequest {
+public class BankQuoteRequest
+{
 
     private int SSN; // unique client number
     private int credit; // the current credit of the client
@@ -13,7 +14,8 @@ public class BankQuoteRequest {
     private int amount; // the requested loan amount
     private int time; // the requested loan period
 
-    public BankQuoteRequest() {
+    public BankQuoteRequest()
+    {
         super();
         this.SSN = 0;
         this.credit = 0;
@@ -22,7 +24,8 @@ public class BankQuoteRequest {
         this.time = 0;
     }
 
-    public BankQuoteRequest(int SSN, int credit, int history, int amount, int time) {
+    public BankQuoteRequest(int SSN, int credit, int history, int amount, int time)
+    {
         super();
         this.SSN = SSN;
         this.credit = credit;
@@ -31,48 +34,59 @@ public class BankQuoteRequest {
         this.time = time;
     }
 
-    public int getSSN() {
+    public int getSSN()
+    {
         return SSN;
     }
 
-    public void setSSN(int SSN) {
+    public void setSSN(int SSN)
+    {
         this.SSN = SSN;
     }
 
-    public int getAmount() {
+    public int getAmount()
+    {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(int amount)
+    {
         this.amount = amount;
     }
 
-    public int getCredit() {
+    public int getCredit()
+    {
         return credit;
     }
 
-    public void setCredit(int credit) {
+    public void setCredit(int credit)
+    {
         this.credit = credit;
     }
 
-    public int getHistory() {
+    public int getHistory()
+    {
         return history;
     }
 
-    public void setHistory(int history) {
+    public void setHistory(int history)
+    {
         this.history = history;
     }
 
-    public int getTime() {
+    public int getTime()
+    {
         return time;
     }
 
-    public void setTime(int time) {
+    public void setTime(int time)
+    {
         this.time = time;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return " ssn=" + this.SSN + " amount=" + amount + " time=" + time + " credit=" + credit + " history" + history;
     }
 }

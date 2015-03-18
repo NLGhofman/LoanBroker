@@ -31,7 +31,8 @@ import javax.swing.table.TableModel;
  *
  * @author Maja Pesic
  */
-public abstract class SendReceiveTable extends JTable {
+public abstract class SendReceiveTable extends JTable
+{
 
     private static final String SEPARATOR = File.separator;
     private static final String WORKING_DIRECTORY = System.getProperty("user.dir");
@@ -45,7 +46,8 @@ public abstract class SendReceiveTable extends JTable {
 
     private JPopupMenu popup;
 
-    public SendReceiveTable(TableModel model) {
+    public SendReceiveTable(TableModel model)
+    {
         super(model);
         receiveHeaderRenderer = new HeaderRenderer(createIcon(RECEIVE_ICON));
         sendHeaderRenderer = new HeaderRenderer(createIcon(SEND_ICON));
@@ -55,14 +57,18 @@ public abstract class SendReceiveTable extends JTable {
         createPopUpMenu();
     }
 
-    private void createPopUpMenu() {
+    private void createPopUpMenu()
+    {
         popup = new JPopupMenu();
         JMenuItem menuItem = new JMenuItem("remove all rows");
-        menuItem.addActionListener(new ActionListener() {
+        menuItem.addActionListener(new ActionListener()
+        {
 
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 DefaultTableModel model = (DefaultTableModel) getModel();
-                while (getRowCount() > 0) {
+                while (getRowCount() > 0)
+                {
                     model.removeRow(0);
                 }
             }
@@ -97,38 +103,47 @@ public abstract class SendReceiveTable extends JTable {
 //        int index = getSelectedRow();
 //        return getRequestReplyModel().getReply(index);
 //    }
-
-    private static ImageIcon createIcon(String name) {
+    private static ImageIcon createIcon(String name)
+    {
         String path = WORKING_DIRECTORY + RESOURCES + name;
         File iconFile = new File(path);
         URL iconURL = null;
         ImageIcon icon = null;
-        try {
+        try
+        {
             iconURL = iconFile.toURI().toURL();
             icon = new ImageIcon(iconURL);
-        } catch (MalformedURLException ex) {
+        }
+        catch (MalformedURLException ex)
+        {
             Logger.getLogger(SendReceiveTable.class.getName()).log(Level.SEVERE, null, ex);
         }
         return icon;
     }
 
-    public void setReceiveColumns(int[] columns) {
-        for (int col_index : columns) {
+    public void setReceiveColumns(int[] columns)
+    {
+        for (int col_index : columns)
+        {
             TableColumn column = getTableHeader().getColumnModel().getColumn(col_index);
             column.setHeaderRenderer(receiveHeaderRenderer);
         }
     }
 
-    public void setSendColumns(int[] columns) {
-        for (int col_index : columns) {
+    public void setSendColumns(int[] columns)
+    {
+        for (int col_index : columns)
+        {
             TableColumn column = getTableHeader().getColumnModel().getColumn(col_index);
             column.setHeaderRenderer(sendHeaderRenderer);
         }
     }
 
-    private class HeaderRenderer extends JLabel implements TableCellRenderer {
+    private class HeaderRenderer extends JLabel implements TableCellRenderer
+    {
 
-        protected HeaderRenderer(Icon icon) {
+        protected HeaderRenderer(Icon icon)
+        {
             super("", JLabel.CENTER);
             setIcon(icon);
             setVerticalTextPosition(JLabel.BOTTOM);
@@ -138,26 +153,32 @@ public abstract class SendReceiveTable extends JTable {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
+                boolean hasFocus, int row, int column)
+        {
             setText(value == null ? "" : value.toString());
             return this;
         }
     }
 
-    private class PopupListener extends MouseAdapter {
+    private class PopupListener extends MouseAdapter
+    {
 
         @Override
-        public void mousePressed(MouseEvent e) {
+        public void mousePressed(MouseEvent e)
+        {
             showPopup(e);
         }
 
         @Override
-        public void mouseReleased(MouseEvent e) {
+        public void mouseReleased(MouseEvent e)
+        {
             showPopup(e);
         }
 
-        private void showPopup(MouseEvent e) {
-            if (e.isPopupTrigger()) {
+        private void showPopup(MouseEvent e)
+        {
+            if (e.isPopupTrigger())
+            {
                 popup.show(e.getComponent(),
                         e.getX(), e.getY());
             }
