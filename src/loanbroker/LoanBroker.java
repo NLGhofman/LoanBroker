@@ -6,26 +6,11 @@ package loanbroker;
 
 import bank.BankQuoteReply;
 import bank.BankQuoteRequest;
-import bank.BankSerializer;
 import client.*;
 import creditbureau.CreditReply;
 import creditbureau.CreditRequest;
-import creditbureau.CreditSerializer;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import loanbroker.gui.LoanBrokerFrame;
 import messaging.GatewayException;
 
